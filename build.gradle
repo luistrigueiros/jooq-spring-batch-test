@@ -33,7 +33,7 @@ jooq {
 				logging = org.jooq.meta.jaxb.Logging.WARN
 				jdbc {
 					driver = 'org.h2.Driver'
-					url = "jdbc:h2:./build/test;AUTO_SERVER=TRUE;INIT=RUNSCRIPT FROM './src/main/resources/intro_schema.sql'"
+					url = "jdbc:h2:./build/test;AUTO_SERVER=TRUE;INIT=RUNSCRIPT FROM './src/main/resources/schema.sql'"
 					user = 'sa'
 					password = ''
 					properties {

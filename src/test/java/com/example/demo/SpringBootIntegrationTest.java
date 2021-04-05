@@ -9,9 +9,12 @@ import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +28,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = {JooqConfiguration.class, DatabaseConfiguration.class})
 @Transactional(transactionManager = "dbTransactionManager")
 @ExtendWith(SpringExtension.class)
+@Sql(scripts = {"/truncate.sql", "/test-data.sql"})
 public class SpringBootIntegrationTest {
+
+    private static final Logger log = LoggerFactory.getLogger(SpringBootIntegrationTest.class);
 
     @Autowired
     private DSLContext dsl;
+
+
+    public void init() {
+        log.debug("Init done !");
+    }
 
     @Test
     public void givenValidData_whenInserting_thenSucceed() {
@@ -109,6 +120,9 @@ public class SpringBootIntegrationTest {
 
     @Test
     public void givenValidData_whenDeleting_thenSucceed() {
+        dsl.delete(AUTHOR_BOOK)
+                .where(AUTHOR_BOOK.AUTHOR_ID.lt(3))
+                .execute();
         dsl.delete(AUTHOR)
                 .where(AUTHOR.ID.lt(3))
                 .execute();

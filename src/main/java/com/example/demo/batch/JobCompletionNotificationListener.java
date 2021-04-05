@@ -14,23 +14,23 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 
 	private static final Logger log = LoggerFactory.getLogger(JobCompletionNotificationListener.class);
 
-	private final JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+//	private final JdbcTemplate jdbcTemplate;
+//
+//	@Autowired
+//	public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
+//		this.jdbcTemplate = jdbcTemplate;
+//	}
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
 		if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
 			log.info("!!! JOB FINISHED! Time to verify the results");
 
-			jdbcTemplate.query("SELECT first_name, last_name FROM people",
-				(rs, row) -> new Person(
-					rs.getString(1),
-					rs.getString(2))
-			).forEach(person -> log.info("Found <" + person + "> in the database."));
+//			jdbcTemplate.query("SELECT first_name, last_name FROM people",
+//				(rs, row) -> new Person(
+//					rs.getString(1),
+//					rs.getString(2))
+//			).forEach(person -> log.info("Found <" + person + "> in the database."));
 		}
 	}
 }

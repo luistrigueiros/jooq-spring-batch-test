@@ -10,14 +10,17 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+
 @Configuration
 public class DatabaseConfiguration implements DisposableBean {
-    private  EmbeddedDatabase database;
+    private EmbeddedDatabase database;
     @Bean
     public EmbeddedDatabase embeddedDatabase() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.setType(EmbeddedDatabaseType.H2)
-                .addScript("intro_schema.sql")
+                .addScript("schema.sql")
+//                .addScript("data.sql")
                 .build();
         return database;
 
@@ -25,8 +28,8 @@ public class DatabaseConfiguration implements DisposableBean {
 
     @Bean
     @Primary
-    public PlatformTransactionManager dbTransactionManager() {
-        return new DataSourceTransactionManager(database);
+    public PlatformTransactionManager dbTransactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
     @Override
