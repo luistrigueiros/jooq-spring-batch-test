@@ -5,6 +5,7 @@ import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -19,11 +20,6 @@ public class JooqConfiguration {
 
     @Autowired
     private DataSource dataSource;
-
-    @Bean
-    public DataSourceTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource);
-    }
 
     @Bean
     public DataSourceConnectionProvider connectionProvider() {
