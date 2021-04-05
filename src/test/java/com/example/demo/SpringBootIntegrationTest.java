@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.config.DatabaseConfiguration;
+import com.example.demo.config.JooqConfiguration;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -20,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@ContextConfiguration(classes = {InitialConfiguration.class, DatabaseConfiguration.class})
+@ContextConfiguration(classes = {JooqConfiguration.class, DatabaseConfiguration.class})
 @Transactional(transactionManager = "transactionManager")
 @ExtendWith(SpringExtension.class)
 public class SpringBootIntegrationTest {

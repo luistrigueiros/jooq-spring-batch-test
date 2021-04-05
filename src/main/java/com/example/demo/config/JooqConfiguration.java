@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.config;
 
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
-public class InitialConfiguration {
+public class JooqConfiguration {
 
     @Autowired
     private DataSource dataSource;
