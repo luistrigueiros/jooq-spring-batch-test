@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @ContextConfiguration(classes = {JooqConfiguration.class, DatabaseConfiguration.class})
-@Transactional(transactionManager = "transactionManager")
+@Transactional(transactionManager = "dbTransactionManager")
 @ExtendWith(SpringExtension.class)
 public class SpringBootIntegrationTest {
 
