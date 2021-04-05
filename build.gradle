@@ -1,0 +1,74 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'nu.studer.jooq' version '5.2'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+	jooqGenerator  'com.h2database:h2'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+jooq {
+	configurations {
+		main {
+			generationTool {
+				logging = org.jooq.meta.jaxb.Logging.WARN
+				jdbc {
+					driver = 'org.h2.Driver'
+					url = "jdbc:h2:./build/test;AUTO_SERVER=TRUE;INIT=RUNSCRIPT FROM './src/main/resources/intro_schema.sql'"
+					user = 'sa'
+					password = ''
+					properties {
+						property {
+							key = 'PAGE_SIZE'
+							value = 2048
+						}
+					}
+				}
+				generator {
+					name = 'org.jooq.codegen.DefaultGenerator'
+					database {
+						name = 'org.jooq.meta.h2.H2Database'
+						includes = '.*'
+						excludes = ''
+					}
+					target {
+						packageName = 'ie.luist.sample'
+					}
+					strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+				}
+			}
+		}
+	}
+}
+
+
+sourceSets.main.java.srcDirs (
+		tasks.named('generateJooq').flatMap { it.outputDir }
+)
+
+tasks.named('generateJooq').configure {
+	// make jOOQ task participate in incremental builds (which is also a prerequisite for participating in build caching)
+	allInputsDeclared = true
+
+	// make jOOQ task participate in build caching
+	outputs.cacheIf { true }
+}
