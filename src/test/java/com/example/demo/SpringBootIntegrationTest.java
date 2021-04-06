@@ -7,6 +7,7 @@ import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class SpringBootIntegrationTest {
     @Autowired
     private DSLContext dsl;
 
-
+    @BeforeEach
     public void init() {
         log.debug("Init done !");
     }
