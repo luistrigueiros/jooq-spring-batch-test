@@ -17,6 +17,7 @@ import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourc
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -25,74 +26,64 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchConfiguration  extends DefaultBatchConfigurer {
-	private PlatformTransactionManager transactionManager;
+public class BatchConfiguration extends DefaultBatchConfigurer {
+    private PlatformTransactionManager transactionManager;
 
-	public BatchConfiguration( PlatformTransactionManager transactionManager, DataIntializerConfiguration dataIntializerConfiguration) {
-		this.transactionManager = transactionManager;
-	}
+    public BatchConfiguration(PlatformTransactionManager transactionManager, DataIntializerConfiguration dataIntializerConfiguration) {
+        this.transactionManager = transactionManager;
+    }
 
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
+    @Autowired
+    public JobBuilderFactory jobBuilderFactory;
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
+    @Autowired
+    public StepBuilderFactory stepBuilderFactory;
 
-	@Override
-	public PlatformTransactionManager getTransactionManager() {
-		return transactionManager;
-	}
+    @Override
+    public PlatformTransactionManager getTransactionManager() {
+        return transactionManager;
+    }
 
 
-//	@Bean
-//	public FlatFileItemReader<Person> reader() {
-//		return new FlatFileItemReaderBuilder<Person>()
-//			.name("personItemReader")
-//			.resource(new ClassPathResource("sample-data.csv"))
-//			.delimited()
-//			.names(new String[]{"firstName", "lastName"})
-//			.fieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {{
-//				setTargetType(Person.class);
-//			}})
-//			.build();
-//	}
 
-	@Bean
-	public ItemReader<Person> reader(DSLContext dslContext) {
-		return new PersonItemReader(dslContext);
-	}
+    @Bean
+    public ItemReader<Person> databaseReader(DSLContext dslContext) {
+        return new PersonItemReader(dslContext);
+    }
 
-	@Bean
-	public PersonItemProcessor processor() {
-		return new PersonItemProcessor();
-	}
+    @Bean
+    public PersonItemProcessor processor() {
+        return new PersonItemProcessor();
+    }
 
-	@Bean
-	public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
-		return new JdbcBatchItemWriterBuilder<Person>()
-			.itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-			.sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
-			.dataSource(dataSource)
-			.build();
-	}
+    @Bean
+    public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<Person>()
+                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
+                .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
+                .dataSource(dataSource)
+                .build();
+    }
 
-	@Bean
-	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
-		return jobBuilderFactory.get("importUserJob")
-			.incrementer(new RunIdIncrementer())
-			.listener(listener)
-			.flow(step1)
-			.end()
-			.build();
-	}
+    @Bean
+    public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
+        return jobBuilderFactory.get("importUserJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(listener)
+                .flow(step1)
+                .end()
+                .build();
+    }
 
-	@Bean
-	public Step step1(JdbcBatchItemWriter<Person> writer, ItemReader<Person> itemReader) {
-		return stepBuilderFactory.get("step1")
-			.<Person, Person> chunk(10)
-			.reader(itemReader)
-			.processor(processor())
-			.writer(writer)
-			.build();
-	}
+    @Bean
+    public Step step1(
+            JdbcBatchItemWriter<Person> writer,
+            @Qualifier("databaseReader") ItemReader<Person> itemReader) {
+        return stepBuilderFactory.get("step1")
+                .<Person, Person>chunk(10)
+                .reader(itemReader)
+                .processor(processor())
+                .writer(writer)
+                .build();
+    }
 }
