@@ -1,0 +1,25 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtimeOnly 'com.h2database:h2'
+}
+
+
+tasks.register("hello") {
+    doLast {
+        println("Hello .....")
+    }
+}
+
+tasks.register("h2server", JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.h2.tools.Server'
+}

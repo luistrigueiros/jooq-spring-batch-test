@@ -1,0 +1,1 @@
+gradlew -b h2-server.gradle  h2server
