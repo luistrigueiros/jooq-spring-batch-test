@@ -26,7 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@ContextConfiguration(classes = {JooqConfiguration.class, DatabaseConfiguration.class})
+@ContextConfiguration(classes = {
+        DatabaseConfiguration.class,
+        JooqConfiguration.class
+})
 @Transactional(transactionManager = "dbTransactionManager")
 @ExtendWith(SpringExtension.class)
 @Sql(scripts = {"/truncate.sql", "/test-data.sql"})
