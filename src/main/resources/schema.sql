@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS author_book, author, book;
 
 CREATE TABLE author
 (
-    id         INT         NOT NULL PRIMARY KEY,
+    id         INT         NOT NULL PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(50),
     last_name  VARCHAR(50) NOT NULL
 );
