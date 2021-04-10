@@ -23,14 +23,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration extends DefaultBatchConfigurer {
     private PlatformTransactionManager transactionManager;
 
-    public BatchConfiguration(PlatformTransactionManager transactionManager, DataIntializerConfiguration dataIntializerConfiguration) {
+    public BatchConfiguration(PlatformTransactionManager transactionManager, DataIntializerConfiguration dataIntializerConfiguration) throws SQLException {
         this.transactionManager = transactionManager;
+//        dataIntializerConfiguration.initData();
     }
 
     @Autowired

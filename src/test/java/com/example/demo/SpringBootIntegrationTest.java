@@ -1,14 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.config.DataIntializerConfiguration;
 import com.example.demo.config.DatabaseConfiguration;
 import com.example.demo.config.JooqConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
+
 import static ie.luist.sample.public_.Tables.AUTHOR;
 import static ie.luist.sample.public_.Tables.BOOK;
 import static ie.luist.sample.public_.tables.AuthorBook.AUTHOR_BOOK;
@@ -28,20 +30,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ContextConfiguration(classes = {
         DatabaseConfiguration.class,
-        JooqConfiguration.class
+        JooqConfiguration.class,
+        DataIntializerConfiguration.class
 })
 @Transactional(transactionManager = "dbTransactionManager")
 @ExtendWith(SpringExtension.class)
 @Sql(scripts = {"/truncate.sql", "/test-data.sql"})
+@Slf4j
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SpringBootIntegrationTest {
-
-    private static final Logger log = LoggerFactory.getLogger(SpringBootIntegrationTest.class);
 
     @Autowired
     private DSLContext dsl;
 
-    @BeforeEach
-    public void init() {
+    @Autowired
+    private DataIntializerConfiguration dataIntializerConfiguration;
+
+    @BeforeAll
+    public void init() throws SQLException {
+        dataIntializerConfiguration.initData();
         log.debug("Init done !");
     }
 

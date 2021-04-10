@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
@@ -19,8 +18,7 @@ public class DataIntializerConfiguration {
     @Value("/test-data.sql")
     private Resource resource;
 
-    @PostConstruct
-    private void initData() throws SQLException {
+    public void initData() throws SQLException {
         ScriptUtils.executeSqlScript(dataSource.getConnection(), resource);
     }
 }
