@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 @Configuration
-public class FileItemReaderTestConfiguration {
+public class ImportCsvTestConfiguration {
     @Bean
     @Qualifier("fileReader")
     public FlatFileItemReader<Person> fileReader() {
