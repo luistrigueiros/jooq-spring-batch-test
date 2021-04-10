@@ -20,7 +20,6 @@ public class DatabaseConfiguration implements DisposableBean {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.setType(EmbeddedDatabaseType.H2)
                 .addScript("schema.sql")
-//                .addScript("data.sql")
                 .build();
         return database;
 
