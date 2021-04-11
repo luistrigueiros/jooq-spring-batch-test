@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.config;
 
 import com.example.demo.batch.Person;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -10,19 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 @Configuration
-public class ImportCsvTestConfiguration {
+public class ImportCsvConfiguration {
     @Bean
     @Qualifier("fileReader")
     public FlatFileItemReader<Person> fileReader() {
+        BeanWrapperFieldSetMapper<Person> mapper = new BeanWrapperFieldSetMapper<>() {{
+            setTargetType(Person.class);
+        }};
         return new FlatFileItemReaderBuilder<Person>()
                 .name("personItemReader")
                 .resource(new ClassPathResource("AuthorType.csv"))
                 .linesToSkip(1)
                 .delimited()
                 .names(new String[]{"firstName", "lastName"})
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<>() {{
-                    setTargetType(Person.class);
-                }})
+                .fieldSetMapper(mapper)
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.batch.Person;
 import com.example.demo.batch.PersonItemWriter;
 import com.example.demo.config.DatabaseConfiguration;
+import com.example.demo.config.ImportCsvConfiguration;
 import com.example.demo.config.JooqConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -19,12 +20,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 @Import(PersonItemWriter.class)
 @ContextConfiguration(classes = {
-        ImportCsvTestConfiguration.class,
+        ImportCsvConfiguration.class,
         DatabaseConfiguration.class,
         JooqConfiguration.class
 })
@@ -51,7 +50,7 @@ public class ImportCsvTest {
     @Test
     public void simpleTest() throws Exception {
         Person person;
-        List<Object> people = new ArrayList<>();
+        List<Person> people = new ArrayList<>();
         do {
             person = personItemReader.read();
             if (person != null) {
@@ -65,7 +64,7 @@ public class ImportCsvTest {
                 people.add(person);
             }
         } while (person != null);
-        personItemWriter.writeItems(people);
+        personItemWriter.write(people);
         log.info("Saved people to database");
     }
 }
