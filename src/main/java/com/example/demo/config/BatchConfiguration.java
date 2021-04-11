@@ -1,6 +1,9 @@
 package com.example.demo.config;
 
-import com.example.demo.batch.*;
+import com.example.demo.batch.JobCompletionNotificationListener;
+import com.example.demo.batch.Person;
+import com.example.demo.batch.PersonItemProcessor;
+import com.example.demo.batch.PersonItemWriter;
 import lombok.SneakyThrows;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -45,8 +48,8 @@ public class BatchConfiguration extends DefaultBatchConfigurer {
     @Autowired
     private PersonItemWriter personItemWriter;
 
-    @Autowired
-    private PersonItemReader personItemReader;
+//    @Autowired
+//    private PersonItemReader personItemReader;
 
     @Autowired
     private PersonItemProcessor processor;
@@ -81,7 +84,7 @@ public class BatchConfiguration extends DefaultBatchConfigurer {
                 .reader(fileItemReader)
                 .processor(processor)
                 .writer(personItemWriter)
-                .reader(personItemReader)
+//                .reader(personItemReader)
                 .build();
     }
 

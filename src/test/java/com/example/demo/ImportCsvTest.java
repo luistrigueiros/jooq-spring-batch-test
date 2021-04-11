@@ -23,6 +23,7 @@ import java.util.List;
 
 @Import(PersonItemWriter.class)
 @ContextConfiguration(classes = {
+        TestPropertiesConfigure.class,
         ImportCsvConfiguration.class,
         DatabaseConfiguration.class,
         JooqConfiguration.class

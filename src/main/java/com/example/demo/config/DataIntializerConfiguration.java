@@ -16,9 +16,18 @@ public class DataIntializerConfiguration {
 
     @Autowired
     @Value("/test-data.sql")
-    private Resource resource;
+    private Resource data;
+
+    @Autowired
+    @Value("/schema.sql")
+    private Resource schema;
+
+    public void initSchema() throws SQLException {
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), schema);
+    }
+
 
     public void initData() throws SQLException {
-        ScriptUtils.executeSqlScript(dataSource.getConnection(), resource);
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), data);
     }
 }
