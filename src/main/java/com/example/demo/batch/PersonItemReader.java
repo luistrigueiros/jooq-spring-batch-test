@@ -35,7 +35,6 @@ public class PersonItemReader extends AbstractPagingItemReader<Person> {
     @Override
     protected void doReadPage() {
         int start = getPage() * getPageSize();
-        //int seekEnd = start + getPageSize();
         log.debug("Reading from start=[{}]", start);
         List<Person> personList = dsl.select(AUTHOR.ID, AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME)
                 .from(AUTHOR)
