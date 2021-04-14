@@ -1,9 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.batch.JobCompletionNotificationListener;
-import com.example.demo.batch.Person;
-import com.example.demo.batch.PersonItemProcessor;
-import com.example.demo.batch.PersonItemWriter;
+import com.example.demo.batch.*;
 import lombok.SneakyThrows;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -42,14 +39,10 @@ public class BatchConfiguration extends DefaultBatchConfigurer {
     private Boolean initData;
 
     @Autowired
-    @Qualifier("fileReader")
-    private FlatFileItemReader<Person> fileItemReader;
-
-    @Autowired
     private PersonItemWriter personItemWriter;
 
-//    @Autowired
-//    private PersonItemReader personItemReader;
+    @Autowired
+    private PersonItemReader personItemReader;
 
     @Autowired
     private PersonItemProcessor processor;
@@ -81,10 +74,10 @@ public class BatchConfiguration extends DefaultBatchConfigurer {
     public Step step1() {
         return stepBuilderFactory.get("step1")
                 .<Person, Person>chunk(10)
-                .reader(fileItemReader)
+//                .reader(fileItemReader)
+                .reader(personItemReader)
                 .processor(processor)
                 .writer(personItemWriter)
-//                .reader(personItemReader)
                 .build();
     }
 
