@@ -1,12 +1,14 @@
 package com.example.demo;
 
 import com.example.demo.batch.Person;
+import com.example.demo.batch.PersonItemReader;
 import com.example.demo.batch.PersonItemWriter;
 import com.example.demo.config.DatabaseConfiguration;
 import com.example.demo.config.ImportCsvConfiguration;
 import com.example.demo.config.JooqConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +23,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @Slf4j
-@Import(PersonItemWriter.class)
+@Import({PersonItemWriter.class, PersonItemReader.class})
 @ContextConfiguration(classes = {
         TestPropertiesConfigure.class,
         ImportCsvConfiguration.class,
@@ -35,19 +39,22 @@ import java.util.List;
 public class ImportCsvTest {
 
     @Autowired
-    private FlatFileItemReader<Person> personItemReader;
+    private FlatFileItemReader<Person> fileItemReader;
 
     @Autowired
     private PersonItemWriter personItemWriter;
 
+    @Autowired
+    private PersonItemReader personItemReader;
+
     @BeforeEach
     public void init() {
-        personItemReader.open(new ExecutionContext());
+        fileItemReader.open(new ExecutionContext());
     }
 
     @AfterEach
     public void close() {
-        personItemReader.close();
+        fileItemReader.close();
     }
 
     @Test
@@ -55,7 +62,7 @@ public class ImportCsvTest {
         Person person;
         List<Person> people = new ArrayList<>();
         do {
-            person = personItemReader.read();
+            person = fileItemReader.read();
             if (person != null) {
                 log.debug("Person = {}", person);
                 if(person.getFirstName() == null) {
@@ -69,5 +76,11 @@ public class ImportCsvTest {
         } while (person != null);
         personItemWriter.write(people);
         log.info("Saved people to database");
+        int count = 0;
+        do {
+            person = personItemReader.read();
+            count ++;
+        }while (person != null);
+        assertTrue(count == 34);
     }
 }
