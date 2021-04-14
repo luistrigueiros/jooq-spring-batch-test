@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,20 +38,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 })
 @Transactional(transactionManager = "dbTransactionManager")
 @ExtendWith(SpringExtension.class)
-@Sql(scripts = {"/truncate.sql", "/test-data.sql"})
+@Sql(scripts = {"/schema.sql", "/test-data.sql"})
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {
+        "spring.datasource.jdbc-url=jdbc:h2:mem:default"
+})
 public class SpringBootIntegrationTest {
 
     @Autowired
     private DSLContext dsl;
 
-    @Autowired
-    private DataIntializerConfiguration dataIntializerConfiguration;
-
     @BeforeAll
     public void init() throws SQLException {
-        dataIntializerConfiguration.initData();
         log.debug("Init done !");
     }
 
