@@ -32,9 +32,7 @@ public class PersonItemReader extends AbstractPagingItemReader<Person> {
         return p;
     }
 
-    @Override
-    protected void doReadPage() {
-        int start = getPage() * getPageSize();
+    private List<Person> getPersonList(int start) {
         log.debug("Reading from start=[{}]", start);
         List<Person> personList = dsl.select(AUTHOR.ID, AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME)
                 .from(AUTHOR)
@@ -46,7 +44,13 @@ public class PersonItemReader extends AbstractPagingItemReader<Person> {
                 .map(PersonItemReader::apply)
                 .collect(Collectors.toList());
         log.debug("Fetch from=[{}], got=[{}] from db", start,personList.size());
-        results = new CopyOnWriteArrayList<>(personList);
+        return personList;
+    }
+
+    @Override
+    protected void doReadPage() {
+        int start = getPage() * getPageSize();
+        results = new CopyOnWriteArrayList<>(getPersonList(start));
     }
 
     @Override
