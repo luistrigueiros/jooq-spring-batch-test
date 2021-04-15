@@ -23,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -59,6 +60,17 @@ public class ImportCsvTest {
 
     @Test
     public void simpleTest() throws Exception {
+        loadDatabase();
+        Person person;
+        int count = 0;
+        do {
+            person = personItemReader.read();
+            count ++;
+        }while (person != null);
+        assertEquals(count, 34);
+    }
+
+    private void loadDatabase() throws Exception {
         Person person;
         List<Person> people = new ArrayList<>();
         do {
@@ -76,11 +88,5 @@ public class ImportCsvTest {
         } while (person != null);
         personItemWriter.write(people);
         log.info("Saved people to database");
-        int count = 0;
-        do {
-            person = personItemReader.read();
-            count ++;
-        }while (person != null);
-        assertTrue(count == 34);
     }
 }
