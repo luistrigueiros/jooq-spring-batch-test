@@ -1,9 +1,8 @@
 package com.example.demo.batch;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.database.AbstractPagingItemReader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,10 @@ import java.util.stream.Collectors;
 
 import static ie.luist.sample.public_.Tables.AUTHOR;
 
+@Slf4j
 @Component
 @Qualifier("databaseReader")
 public class PersonItemReader extends AbstractPagingItemReader<Person> {
-    private static final Logger log = LoggerFactory.getLogger(PersonItemReader.class);
 
     private final DSLContext dsl;
 

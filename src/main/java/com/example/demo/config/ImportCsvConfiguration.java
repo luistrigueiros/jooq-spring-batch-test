@@ -22,7 +22,7 @@ public class ImportCsvConfiguration {
                 .resource(new ClassPathResource("AuthorType.csv"))
                 .linesToSkip(1)
                 .delimited()
-                .names(new String[]{"firstName", "lastName"})
+                .names("firstName", "lastName")
                 .fieldSetMapper(mapper)
                 .build();
     }

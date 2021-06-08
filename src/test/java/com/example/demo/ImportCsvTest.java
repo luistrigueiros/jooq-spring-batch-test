@@ -21,7 +21,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,17 +62,21 @@ public class ImportCsvTest {
 
     @Test
     public void simpleTest() throws Exception {
-        loadDatabase();
+        List<Person> allLoaded = loadDatabase();
+        Set<Person> allLoadedSet = new HashSet<>(allLoaded);
+        List<Person> readFromDatabase = new ArrayList<>();
         Person person;
-        int count = 0;
         do {
             person = personItemReader.read();
-            count ++;
+            readFromDatabase.add(person);
         }while (person != null);
-        assertEquals(count, 34);
+        assertEquals(readFromDatabase.size(), 34);
+        Set<Person> allReadFromDatabaseSet = new HashSet<>(readFromDatabase);
+        allReadFromDatabaseSet.removeAll(allLoadedSet);
+//        assertEquals(0, allReadFromDatabaseSet.size());
     }
 
-    private void loadDatabase() throws Exception {
+    private List<Person> loadDatabase() throws Exception {
         Person person;
         List<Person> people = new ArrayList<>();
         do {
@@ -87,6 +93,7 @@ public class ImportCsvTest {
             }
         } while (person != null);
         personItemWriter.write(people);
-        log.info("Saved people to database");
+        log.info("Saved people {} to database", people.size());
+        return people;
     }
 }

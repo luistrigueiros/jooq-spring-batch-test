@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -30,20 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@ContextConfiguration(classes = {
-        TestPropertiesConfigure.class,
-        DatabaseConfiguration.class,
-        JooqConfiguration.class,
-        DataIntializerConfiguration.class
-})
-@Transactional(transactionManager = "dbTransactionManager")
-@ExtendWith(SpringExtension.class)
-@Sql(scripts = {"/schema.sql", "/test-data.sql"})
+@Transactional
+@Sql(scripts = {"/schema.sql", "/data.sql"})
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(properties = {
-        "spring.datasource.jdbc-url=jdbc:h2:mem:default"
-})
+@SpringBootTest
 public class SpringBootIntegrationTest {
 
     @Autowired

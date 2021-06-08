@@ -18,7 +18,7 @@ public class DataIntializerConfiguration {
     private DataSource dataSource;
 
     @Autowired
-    @Value("/test-data.sql")
+    @Value("/data.sql")
     private Resource data;
 
     @Autowired
